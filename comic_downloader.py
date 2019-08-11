@@ -16,15 +16,27 @@ import random
 
 
 def gethtml(url):
-    response=requests.get(url)
-    print(response.status_code)
-    html=response.text
-    return html
+	USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.119 Safari/537.36'
+	try:
+		response = requests.get(url, headers = {'User-Agent':Avatar.USER_AGENT})
+		if response.status_code == 200:
+			response.encoding = response.apparent_encoding
+	    	# print(response.status_code)
+	    	html=response.text
+    		return html
+    	else:
+    		print("Server reject.")
+    except Exception as e:
+    	print("Connect error ", e)
+    	return None
+
+
 '''
 def getsoup(html):
     soup=BeautifulSoup(html,'html.parser')
     return soup
     '''
+
 
 def find_comic_url(html):
     comic_url={}
@@ -76,36 +88,43 @@ def manhua(manhua_url,page,fpath):
         print()
         time.sleep(3)
 
+
 def getimg(pic_url,page,file_path):
     path=file_path+'/'+page+'.jpg'
     urllib.request.urlretrieve(pic_url,path)
 
-def main():
+
+def main(target_url):
     print('start...')
-    url='http://www.cartoonmad.com/comic/2650.html'
-    html=gethtml(url)
-    #soup=getsoup(html)
-    comic_url={}
-    roll_page={}
-    comic_url,roll_page=find_comic_url(html)
-    #print(comic_url)
-    #print(roll_page)
-    path=os.getcwd()#获取当前文件夹的路径
-    comic_path=path+'/'+'comic'
-    creat_folder(comic_path)
-    f_path=comic_path+'/'
-    for i in range(len(comic_url)):
-        roll_path=f_path+str(i+1)
-        creat_folder(roll_path)
-        manhua(comic_url[i+1],roll_page[i+1],roll_path)
-        print('one roll download over!')
-        sleep(random.randint(5,9))#使程序休眠，休眠时间为5-9的随机数
-    print('over!')
+    if target_url:
+	    # url='http://www.cartoonmad.com/comic/2650.html'
+	    html = gethtml(target_url)
+	    #soup=getsoup(html)
+	    comic_url = {}
+	    roll_page = {}
+	    comic_url,roll_page = find_comic_url(html)
+	    #print(comic_url)
+	    #print(roll_page)
+	    path=os.getcwd()#获取当前文件夹的路径
+	    comic_path=path + '/' + 'comic'
+	    creat_folder(comic_path)
+	    f_path=comic_path+'/'
+	    for i in range(len(comic_url)):
+	        roll_path=f_path+str(i+1)
+	        creat_folder(roll_path)
+	        manhua(comic_url[i+1],roll_page[i+1],roll_path)
+	        print('one roll download over!')
+	        sleep(random.randint(5,9))#使程序休眠，休眠时间为5-9的随机数
+	    print('over!')
+	else:
+		print("The target url is empty.Please enter a url.")
 
 
 
-main()
-print('mission completed!')
+if __name__ == '__main__':
+	url='http://www.cartoonmad.com/comic/2650.html'
+	main()
+	print('mission completed!')
     
     
     
