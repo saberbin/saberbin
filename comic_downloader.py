@@ -2,23 +2,25 @@
 # -*- coding:utf-8 -*-
 #Author:Saberbin
 #comic_downloader.py
-#version 3.7
+#version 3.9
 
 # url='http://www.cartoonmad.com/comic/2650.html'
 
 import re
-import urllib.request
+# import urllib.request
 import requests
 import os
 from bs4 import BeautifulSoup
 from time import sleep
-import random
+from random import randint
+
+USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.119 Safari/537.36'
 
 
 def gethtml(url):
-	USER_AGENT = 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/64.0.3282.119 Safari/537.36'
+	
 	try:
-		response = requests.get(url, headers = {'User-Agent':Avatar.USER_AGENT})
+		response = requests.get(url, headers = {'User-Agent':USER_AGENT})
 		if response.status_code == 200:
 			response.encoding = response.apparent_encoding
 	    	# print(response.status_code)
@@ -72,10 +74,9 @@ def manhua(manhua_url,page,fpath):
     li=re.findall(r'src="http://(.*).jpg"',manhua_html)
     pic_url=li[0]
     f_url=pic_url[:41]
-    for i in range(int(page)+1):
-        if i==0:
-            continue
-        page=urlprocess(i)
+    for i in range(1, int(page)):
+        # page = urlprocess(i)
+        page = "%3d"%i
         pic_url='http://'+f_url+page+'.jpg'
         getimg(pic_url,page,fpath)
         print(page)
@@ -84,8 +85,17 @@ def manhua(manhua_url,page,fpath):
 
 
 def getimg(pic_url,page,file_path):
-    path=file_path+'/'+page+'.jpg'
-    urllib.request.urlretrieve(pic_url,path)
+    # path = file_path+'/'+page+'.jpg'
+    img_path = "{}/{}.jpg".format(file_path, page)
+    # urllib.request.urlretrieve(pic_url,path)
+    try:
+    	pic_response = request.get(pic_url, headers = {'User-Agent':USER_AGENT})
+    	pic_content = pic_response.content
+    except Exception as e:
+    	print("error message:", e)
+    with open(img_path, "wb") as f:
+    	f.write(pic_content)
+
 
 
 def main(target_url):
@@ -111,7 +121,7 @@ def main(target_url):
 	        creat_folder(os.path.join(f_path, str(i+1)))
 	        manhua(comic_url[i+1], roll_page[i+1], roll_path)
 	        print('one roll download over!')
-	        sleep(random.randint(3, 7))#使程序休眠，休眠时间为5-9的随机数
+	        sleep(randint(3, 7))#使程序休眠，休眠时间为3-7的随机数
 	    print('download over!')
 	else:
 		print("The target url is empty.Please enter a url.")
