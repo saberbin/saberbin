@@ -2,9 +2,9 @@
 # -*- coding:utf-8 -*-
 #Author:Saberbin
 #comic_downloader.py
-#version 3.5
+#version 3.7
 
-#url='http://www.cartoonmad.com/comic/2650.html'
+# url='http://www.cartoonmad.com/comic/2650.html'
 
 import re
 import urllib.request
@@ -22,7 +22,7 @@ def gethtml(url):
 		if response.status_code == 200:
 			response.encoding = response.apparent_encoding
 	    	# print(response.status_code)
-	    	html=response.text
+	    	html = response.text
     		return html
     	else:
     		print("Server reject.")
@@ -31,23 +31,17 @@ def gethtml(url):
     	return None
 
 
-'''
-def getsoup(html):
-    soup=BeautifulSoup(html,'html.parser')
-    return soup
-    '''
-
-
 def find_comic_url(html):
-    comic_url={}
-    a=[]
-    roll_page={}
-    href=re.findall(r'/(\d+)\.html',html)
-    for i in range(len(href)):
-        if len(href[i])==15:
-            a.append(href[i])
-        else:
-            continue
+    comic_url = {}
+    # a = []
+    roll_page = {}
+    href = re.findall(r'/(\d+)\.html',html)
+    # for i in range(len(href)):
+    #     if len(href[i])==15:
+    #         a.append(href[i])
+    #     else:
+    #         continue
+    a = [a_url for a_url in href if len(a_url) ==15]
     for i in range(len(a)):
         comic_url[i+1]='http://www.cartoonmad.com'+'/comic/'+a[i]+'.html'
         roll_page[i+1]=a[i][9:12]
@@ -106,16 +100,19 @@ def main(target_url):
 	    #print(comic_url)
 	    #print(roll_page)
 	    path=os.getcwd()#获取当前文件夹的路径
-	    comic_path=path + '/' + 'comic'
+	    comic_path = os.path.join(path, "comic")
+	    # comic_path=path + '/' + 'comic'
 	    creat_folder(comic_path)
 	    f_path=comic_path+'/'
 	    for i in range(len(comic_url)):
-	        roll_path=f_path+str(i+1)
-	        creat_folder(roll_path)
-	        manhua(comic_url[i+1],roll_page[i+1],roll_path)
+	        # roll_path=f_path+str(i+1)
+	        # roll_path = os.path.join(f_path, str(i+1))
+	        # creat_folder(roll_path)
+	        creat_folder(os.path.join(f_path, str(i+1)))
+	        manhua(comic_url[i+1], roll_page[i+1], roll_path)
 	        print('one roll download over!')
-	        sleep(random.randint(5,9))#使程序休眠，休眠时间为5-9的随机数
-	    print('over!')
+	        sleep(random.randint(3, 7))#使程序休眠，休眠时间为5-9的随机数
+	    print('download over!')
 	else:
 		print("The target url is empty.Please enter a url.")
 
