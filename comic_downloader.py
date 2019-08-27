@@ -47,7 +47,7 @@ def find_comic_url(html):
     for i in range(len(a)):
         comic_url[i+1]='http://www.cartoonmad.com'+'/comic/'+a[i]+'.html'
         roll_page[i+1]=a[i][9:12]
-    return comic_url,roll_page
+    return comic_url, roll_page
 
 #创建文件夹存放图片
 def creat_folder(folder_path):
@@ -60,27 +60,23 @@ def creat_folder(folder_path):
 def urlprocess(i):
     if i<=9:
         picurl='00'+str(i)
-        return picurl
     elif i>=10 and i<=99:
         picurl='0'+str(i)
-        return picurl
     else:
         picurl=str(i)
-        return picurl
+    return picurl
 
 #download manhua
 def manhua(manhua_url,page,fpath):
-    manhua_html=gethtml(manhua_url)
-    li=re.findall(r'src="http://(.*).jpg"',manhua_html)
-    pic_url=li[0]
-    f_url=pic_url[:41]
+    manhua_html = gethtml(manhua_url)
+    pic_url = re.findall(r'src="http://(.*).jpg"',manhua_html)[0]
+    f_url = pic_url[:41]
     for i in range(1, int(page)):
         # page = urlprocess(i)
-        page = "%3d"%i
-        pic_url='http://'+f_url+page+'.jpg'
+        page = "%3d" % i
+        pic_url='http://' + f_url + page + '.jpg'
         getimg(pic_url,page,fpath)
-        print(page)
-        print()
+        # print(page)
         time.sleep(3)
 
 
@@ -106,7 +102,7 @@ def main(target_url):
 	    #soup=getsoup(html)
 	    comic_url = {}
 	    roll_page = {}
-	    comic_url,roll_page = find_comic_url(html)
+	    comic_url, roll_page = find_comic_url(html)
 	    #print(comic_url)
 	    #print(roll_page)
 	    path=os.getcwd()#获取当前文件夹的路径
@@ -132,9 +128,4 @@ if __name__ == '__main__':
 	url='http://www.cartoonmad.com/comic/2650.html'
 	main()
 	print('mission completed!')
-    
-    
-    
-
-
 
